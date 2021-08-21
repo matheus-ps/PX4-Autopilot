@@ -50,14 +50,21 @@ message(STATUS "Building and including ${config_io_board}")
 
 include(ExternalProject)
 ExternalProject_Add(px4io_firmware
-	SOURCE_DIR ${CMAKE_SOURCE_DIR}
-	DOWNLOAD_COMMAND ""
+	GIT_REPOSITORY ${PX4_SOURCE_DIR}
+	GIT_TAG ${PX4_GIT_TAG}
+	GIT_SUBMODULES platforms/nuttx/NuttX/nuttx platforms/nuttx/NuttX/apps
+	LOG_DOWNLOAD true
+	USES_TERMINAL_DOWNLOAD false
 	UPDATE_COMMAND ""
+	#GIT_REMOTE_UPDATE_STRATEGY CHECKOUT
+	#DOWNLOAD_COMMAND rsync -a --quiet --inplace --no-links --exclude build --exclude=*.o --exclude=*.a --exclude nuttx/config.h --exclude=.config --exclude=*.pdat --exclude=*.bdat --exclude=dummy/Kconfig --exclude=platforms/nuttx/NuttX/nuttx/Make.defs ${PX4_SOURCE_DIR}/ ${PX4_BINARY_DIR}/external/Source/px4io_firmware/
+	#UPDATE_COMMAND   rsync -a --quiet --inplace --no-links --exclude build --exclude=*.o --exclude=*.a --exclude nuttx/config.h --exclude=.config --exclude=*.pdat --exclude=*.bdat --exclude=.clean_context --exclude=dummy/Kconfig --exclude=platforms/nuttx/NuttX/nuttx/Make.defs ${PX4_SOURCE_DIR}/ ${PX4_BINARY_DIR}/external/Source/px4io_firmware/
+	#BUILD_COMMAND cmake --build ${PX4_BINARY_DIR}/external/Build/px4io_firmware -- -d explain
 	CMAKE_ARGS -DCONFIG=${config_io_board}
+	#CONFIGURE_HANDLED_BY_BUILD true
 	INSTALL_COMMAND ""
 	USES_TERMINAL_BUILD true
-	DEPENDS git_nuttx git_nuttx_apps
-	BUILD_ALWAYS 1
+	#BUILD_ALWAYS 1
 	BUILD_BYPRODUCTS ${PX4_BINARY_DIR}/external/Build/px4io_firmware/${config_io_board}.elf
 )
 
